@@ -4,10 +4,11 @@ import { Navbar, Nav, Container } from "react-bootstrap";
 const NavbarComponent =() =>{
     return (
     <Navbar bg="dark" variant="dark" expand="lg">
+      
         <Container>
           <Navbar.Brand>
             {/* Placeholder for Logo and Name */}
-            <span style={{ fontSize: "24px", fontWeight: "bold" }}>Your Logo Here</span>
+            <span style={{ fontSize: "24px", fontWeight: "bold" }}><img src= ""alt="Description "/></span>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">

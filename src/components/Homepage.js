@@ -12,7 +12,7 @@ const HomePage = () => {
       {/* Hero Section */}
       <div
         style={{
-          backgroundImage: `url("path/to/your/hero-image.jpg")`, // Replace with your hero image
+          backgroundImage: `url("sector.avif")`, // Replace with your hero image
           backgroundSize: "cover",
           backgroundPosition: "center",
           color: "white",
@@ -21,8 +21,8 @@ const HomePage = () => {
         }}
       >
         <Container>
-          <h1>SBS MTV The Kpop Show Ticket Package</h1>
-          <p>Location: [Insert Location] | Time: [Insert Time]</p>
+          <h1>Event  Ticketing </h1>
+          
           <Button variant="danger" size="lg">
             Buy Tickets
           </Button>
