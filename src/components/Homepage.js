@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Button, Card, Row, Col, Modal, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import NavbarComponent from "./NavbarComponent";
@@ -9,21 +9,38 @@ const HomePage = () => {
   const [showModal, setShowModal] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [customerDetails, setCustomerDetails] = useState({ name: "", email: "", telephone: "", password: "" });
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
   const navigate = useNavigate();
 
+  // Handle modal state
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
 
+  // Fetch upcoming events
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/events");
+        setUpcomingEvents(response.data.slice(0, 3)); // Limit to 3 upcoming events
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+    fetchEvents();
+  }, []);
+
+  // Handle form changes
   const handleChange = (e) => {
     setCustomerDetails({ ...customerDetails, [e.target.name]: e.target.value });
   };
 
+  // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       if (isLogin) {
-        // Handle Login
+        // Handle login
         const response = await axios.post("http://localhost:5000/api/customers/login", {
           email: customerDetails.email,
           password: customerDetails.password,
@@ -32,10 +49,10 @@ const HomePage = () => {
         handleCloseModal();
         navigate("/events"); // Redirect to events page
       } else {
-        // Handle Registration
+        // Handle registration
         const response = await axios.post("http://localhost:5000/api/customers/register", customerDetails);
         alert("Registration successful! Please log in to continue.");
-        setIsLogin(true); // Switch to login after registration
+        setIsLogin(true); // Switch to login mode
       }
     } catch (error) {
       console.error("Error during authentication:", error);
@@ -71,52 +88,29 @@ const HomePage = () => {
       <Container className="mt-5">
         <h2 className="text-center mb-4">Upcoming Events</h2>
         <Row>
-          {/* Replace with your dynamic event data */}
-          <Col md={4} className="mb-4">
-            <Card>
-              <Card.Img variant="top" src="path/to/event-image1.jpg" alt="Event 1" />
-              <Card.Body>
-                <Card.Title>Event Title 1</Card.Title>
-                <Card.Text>
-                  Event Date: [Insert Date]
-                  <br />
-                  Location: [Insert Location]
-                </Card.Text>
-                <Button variant="primary">Learn More</Button>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col md={4} className="mb-4">
-            <Card>
-              <Card.Img variant="top" src="path/to/event-image2.jpg" alt="Event 2" />
-              <Card.Body>
-                <Card.Title>Event Title 2</Card.Title>
-                <Card.Text>
-                  Event Date: [Insert Date]
-                  <br />
-                  Location: [Insert Location]
-                </Card.Text>
-                <Button variant="primary">Learn More</Button>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col md={4} className="mb-4">
-            <Card>
-              <Card.Img variant="top" src="path/to/event-image3.jpg" alt="Event 3" />
-              <Card.Body>
-                <Card.Title>Event Title 3</Card.Title>
-                <Card.Text>
-                  Event Date: [Insert Date]
-                  <br />
-                  Location: [Insert Location]
-                </Card.Text>
-                <Button variant="primary">Learn More</Button>
-              </Card.Body>
-            </Card>
-          </Col>
+          {upcomingEvents.map((event) => (
+            <Col md={4} key={event._id} className="mb-4">
+              <Card>
+                <Card.Img variant="top" src={event.image || "path/to/default-image.jpg"} alt={event.title} />
+                <Card.Body>
+                  <Card.Title>{event.title}</Card.Title>
+                  <Card.Text>
+                    Date: {event.date}
+                    <br />
+                    Location: {event.location}
+                  </Card.Text>
+                  <Button variant="primary" onClick={handleShowModal}>
+                    Learn More
+                  </Button>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
         </Row>
         <div className="text-center">
-          <Button variant="secondary">Load More</Button>
+          <Button variant="secondary" onClick={() => navigate("/events")}>
+            Load More
+          </Button>
         </div>
       </Container>
 
